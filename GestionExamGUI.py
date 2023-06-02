@@ -37,6 +37,7 @@ class App(customtkinter.CTk):
     def __init__(self, *args, **kwargs):
         # call super constructor
         super().__init__(*args, **kwargs)
+        print("initializing app")
 
         # configure root
         self.title("Gestion des examens")
@@ -122,6 +123,7 @@ class App(customtkinter.CTk):
         self.frame_eleve.grid_columnconfigure(0, weight=1)
         self.frame_eleve.grid_rowconfigure(1, weight=1)
 
+        # create eleve frame widgets
         self.label_heading = customtkinter.CTkLabel(
             self.frame_eleve,
             text="Eleve",
@@ -268,6 +270,7 @@ class App(customtkinter.CTk):
         self.button_back.grid(row=0, column=0, sticky="w", padx=5, pady=5)
 
     def show_frame_main(self):
+        print("show main frame")
         # hide all frames
         self.frame_eleve.grid_forget()
         self.frame_prof.grid_forget()
@@ -278,6 +281,7 @@ class App(customtkinter.CTk):
         self.frame_main.grid(row=1, column=0, sticky="nsew", padx=50, pady=50)
 
     def show_frame_login(self):
+        print("show login frame")
         # hide main frame
         self.frame_main.grid_forget()
         # show login frame
@@ -286,6 +290,7 @@ class App(customtkinter.CTk):
         # self.frame_topbar.grid(row=0, column=0, sticky="new", padx=20, pady=20)
 
     def show_frame_eleve(self):
+        print("show eleve frame")
         # hide main frame
         self.frame_login.grid_forget()
         self.frame_qcm.grid_forget()
@@ -295,6 +300,7 @@ class App(customtkinter.CTk):
         self.frame_topbar.grid(row=0, column=0, sticky="new", padx=20, pady=20)
 
     def show_frame_prof(self):
+        print("show prof frame")
         # hide main frame
         self.frame_main.grid_forget()
         # show prof frame
@@ -303,6 +309,7 @@ class App(customtkinter.CTk):
         self.frame_topbar.grid(row=0, column=0, sticky="new", padx=20, pady=20)
 
     def show_qcm_frame(self, qcm_id):
+        print(f"show qcm frame {qcm_id}")
         self.frame_eleve.grid_forget()
         self.label_qcm_heading.configure(text=f"QCM {qcm_id}")
         self.frame_qcm.grid(row=1, column=0, sticky="nsew", padx=20, pady=20)
