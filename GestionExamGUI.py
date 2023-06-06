@@ -185,6 +185,54 @@ class App(customtkinter.CTk):
         )
         self.label_heading.grid(row=2, column=0, padx=30, pady=30)
 
+        self.frame_form_create_student = customtkinter.CTkFrame(self.frame_prof.tab("Créer un élève"))
+        self.frame_form_create_student.grid(row=3, column=0, padx=30, pady=15)
+
+        self.label_heading = customtkinter.CTkLabel(
+            self.frame_form_create_student,
+            text="Login",
+            font=customtkinter.CTkFont(size=20, weight="bold"),
+        )
+        self.label_heading.grid(row=0, column=0, padx=30, pady=15)
+
+        self.label_username = customtkinter.CTkLabel(
+            self.frame_form_create_student,
+            text="Nom d'utilisateur",
+            font=customtkinter.CTkFont(size=20),
+        )
+        self.label_username.grid(row=1, column=0, sticky="w", padx=30, pady=(15, 0))
+
+        self.entry_username_create_student = customtkinter.CTkEntry(
+            self.frame_form_create_student,
+            font=customtkinter.CTkFont(size=20),
+            width=220,
+        )
+        self.entry_username_create_student.grid(row=2, column=0, padx=30)  # renumerate
+
+        self.label_password = customtkinter.CTkLabel(
+            self.frame_form_create_student,
+            text="Mot de passe",
+            font=customtkinter.CTkFont(size=20),
+        )
+        self.label_password.grid(row=3, column=0, sticky="w", padx=30, pady=(15, 0))
+
+        self.entry_password_create_student = customtkinter.CTkEntry(
+            self.frame_form_create_student,
+            font=customtkinter.CTkFont(size=20),
+            width=220,
+            show="*",
+        )
+        self.entry_password_create_student.grid(row=4, column=0, padx=30)
+
+        self.button_register = customtkinter.CTkButton(
+            self.frame_form_create_student,
+            text="Créer l'élève",
+            font=customtkinter.CTkFont(size=20, weight="bold"),
+            command=self.register,
+            width=220,
+        )
+        self.button_register.grid(row=5, column=0, padx=30, pady=(60, 15))
+
         self.label_heading = customtkinter.CTkLabel(
             self.frame_prof.tab("Corriger un QCM"),
             text="Corriger un QCM",
@@ -240,7 +288,7 @@ class App(customtkinter.CTk):
             self.frame_form,
             text="Login",
             font=customtkinter.CTkFont(size=20, weight="bold"),
-            command=self.show_frame_eleve,
+            command=self.login,
             width=220,
         )
         self.button_login.grid(row=5, column=0, padx=30, pady=(60, 15))
@@ -314,6 +362,51 @@ class App(customtkinter.CTk):
         self.label_qcm_heading.configure(text=f"QCM {qcm_id}")
         self.frame_qcm.grid(row=1, column=0, sticky="nsew", padx=20, pady=20)
         self.frame_topbar.grid(row=0, column=0, sticky="new", padx=20, pady=20)
+
+    def register(self):
+        # Check if the username and password are not empty
+        if self.entry_username_create_student.get() == "" or self.entry_password_create_student.get() == "":
+            messagebox.showerror("Error", "Please fill all the fields")
+            return
+        
+        print(self.entry_username_create_student.get(), self.entry_password_create_student.get())
+
+        with open("accounts.txt", mode="r", encoding='utf-8') as file:
+            accounts = file.readlines()
+            for account in accounts:
+                # extract username and password from the line
+                username, password = account.split(":")
+                # remove the \n from the password
+                password = password.strip()
+                # check if the username already exists
+                if username == self.entry_username_create_student.get():
+                    messagebox.showerror("Error", "Username already exists")
+                    return
+
+        with open("accounts.txt", mode="a", encoding='utf-8') as file:
+            file.write(f"{self.entry_username_create_student.get()}:{self.entry_password_create_student.get()}\n")
+            self.show_frame_eleve()
+
+
+    def login(self):
+        # Check if the username and password are not empty
+        if self.entry_username.get() == "" or self.entry_password.get() == "":
+            messagebox.showerror("Error", "Please fill all the fields")
+            return
+
+        with open("accounts.txt", mode="r", encoding='utf-8') as file:
+            accounts = file.readlines()
+            for account in accounts:
+                # extract username and password from the line
+                username, password = account.split(":")
+                # remove the \n from the password
+                password = password.strip()
+                # check if the username and password are correct
+                if username == self.entry_username.get() and password == self.entry_password.get():
+                    self.show_frame_eleve()
+                    return
+
+            messagebox.showerror("Error", "Wrong username or password")
 
 
 if __name__ == "__main__":
