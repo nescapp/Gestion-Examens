@@ -9,8 +9,8 @@ customtkinter.set_appearance_mode("light")
 customtkinter.set_default_color_theme("images/color_theme.json")
 
 
-class ScrollableFrame(customtkinter.CTkScrollableFrame):
-    def __init__(self, master, command=None, **kwargs):
+class ScrollableFrameQCMList(customtkinter.CTkScrollableFrame):
+    def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
         self.label_list = []
 
@@ -22,6 +22,43 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
             height=220,
             width=1000,
             command=command,
+        )
+        button_item.grid(
+            row=len(self.label_list), column=0, padx=10, pady=10
+        )
+        self.label_list.append(button_item)
+
+
+class ScrollableFrameCreateQCM(customtkinter.CTkScrollableFrame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+        self.label_list_2 = []
+
+    def add_item(self, item):
+        # frame_item = customtkinter.CTkFrame(
+        #     self,
+        #     height=220,
+        #     width=1000,
+        #     border_color="#FF0000",
+        #     border_width=5,
+        # )
+        # frame_item.grid(
+        #     row=len(self.label_list_2), column=0, padx=10, pady=10
+        # )
+        # # label_item = customtkinter.CTkLabel(
+        # #     frame_item,
+        # #     text=item,
+        # #     font=customtkinter.CTkFont(size=20, weight="bold"),
+        # # )
+        # # label_item.grid(row=0, column=0, padx=10, pady=10)
+        # self.label_list_2.append(frame_item)
+        button_item = customtkinter.CTkButton(
+            self,
+            text=item,
+            font=customtkinter.CTkFont(size=20, weight="bold"),
+            height=220,
+            width=1000,
+            command=None,
         )
         button_item.grid(
             row=len(self.label_list), column=0, padx=10, pady=10
@@ -131,7 +168,7 @@ class App(customtkinter.CTk):
         )
         self.label_heading.grid(row=0, column=0, padx=30, pady=30)
 
-        self.scrollable_frame = ScrollableFrame(
+        self.scrollable_frame = ScrollableFrameQCMList(
             master=self.frame_eleve,
             height=500,  # item_list=[f"QCM {i}" for i in range(10)]
         )
@@ -177,6 +214,18 @@ class App(customtkinter.CTk):
             font=customtkinter.CTkFont(size=28, weight="bold"),
         )
         self.label_heading.grid(row=2, column=0, padx=30, pady=30)
+
+
+
+        self.frame_form_create_qcm = ScrollableFrameCreateQCM(master=self.frame_prof.tab("Créer un QCM"))
+        self.frame_form_create_qcm.grid(row=3, column=0, padx=30, pady=15, sticky="nesw")
+
+        self.scrollable_frame.add_item("yes")
+        self.scrollable_frame.add_item("no")
+        
+
+
+        # create prof tab widgets - create student
 
         self.label_heading = customtkinter.CTkLabel(
             self.frame_prof.tab("Créer un élève"),
@@ -303,6 +352,9 @@ class App(customtkinter.CTk):
             text_color="gray16",
         )
         self.button_back.grid(row=6, column=0, padx=30, pady=(0, 15))
+
+        self.entry_username.insert(0, "test")
+        self.entry_password.insert(0, "test")
 
         # create top bar frame
         self.frame_topbar = customtkinter.CTkFrame(
