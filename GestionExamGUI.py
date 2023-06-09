@@ -3,6 +3,7 @@ import customtkinter
 from PIL import Image
 from tkinter import messagebox
 from functools import partial
+import random
 
 # set appearance mode and default color theme
 customtkinter.set_appearance_mode("light")
@@ -33,43 +34,77 @@ class ScrollableFrameCreateQCM(customtkinter.CTkScrollableFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
         self.label_list_2 = []
+        self.columnconfigure(0, weight=1)
+
+        button_add = customtkinter.CTkButton(
+            self,
+            text="Nouvelle question",
+            font=customtkinter.CTkFont(size=20, weight="bold"),
+            command=lambda: self.add_item("Nouvelle question"),
+        )
+        button_add.grid(row=10, column=0, padx=10, pady=10, sticky="nsew")
+        
 
     def add_item(self, item):
-        # frame_item = customtkinter.CTkFrame(
-        #     self,
-        #     height=220,
-        #     width=1000,
-        #     border_color="#FF0000",
-        #     border_width=5,
-        # )
-        # frame_item.grid(
-        #     row=len(self.label_list_2), column=0, padx=10, pady=10
-        # )
-        # # label_item = customtkinter.CTkLabel(
-        # #     frame_item,
-        # #     text=item,
-        # #     font=customtkinter.CTkFont(size=20, weight="bold"),
-        # # )
-        # # label_item.grid(row=0, column=0, padx=10, pady=10)
-        # self.label_list_2.append(frame_item)
-        button_item = customtkinter.CTkButton(
-            self,
-            text=item,
-            font=customtkinter.CTkFont(size=20, weight="bold"),
-            height=220,
-            width=1000,
-            command=None,
-        )
-        button_item.grid(
-            row=len(self.label_list), column=0, padx=10, pady=10
-        )
-        self.label_list.append(button_item)
+        randomhexcolor = "#%06x" % random.randint(0, 0xFFFFFF)
 
+        if len(self.label_list_2) > 10:
+            messagebox.showerror(
+                "Erreur",
+                "Vous ne pouvez pas ajouter plus de 10 questions dans un QCM",
+            )
+            return
+
+        frame_item = customtkinter.CTkFrame(
+            self,
+            height=500,
+            border_color=randomhexcolor,
+            border_width=5,
+        )
+        frame_item.grid(
+            row=len(self.label_list_2), column=0, padx=100, pady=10, sticky="nsew"
+        )
+        frame_item.grid_columnconfigure(0, weight=1)
+
+        # label_item = customtkinter.CTkLabel(
+        #     frame_item,
+        #     text=item,
+        #     font=customtkinter.CTkFont(size=20, weight="bold"),
+        # )
+        # label_item.grid(row=0, column=0, padx=10, pady=10)
+        # button_add = customtkinter.CTkButton(
+        #     frame_item,
+        #     text="Nouvelle question",
+        #     font=customtkinter.CTkFont(size=20, weight="bold"),
+        #     command=lambda: self.add_item("Nouvelle question"),
+        # )
+        # button_add.grid(row=0, column=0, padx=10, pady=10)
+
+        button_delete = customtkinter.CTkButton(
+            frame_item,
+            text="Supprimer",
+            font=customtkinter.CTkFont(size=20, weight="bold"),
+            command=lambda: self.delete_item(frame_item),
+        )
+        button_delete.grid(row=0, column=0, padx=10, pady=10)
+
+        self.label_list_2.append(frame_item)
+
+    def delete_item(self, item):
+        # self.label_list_2.remove(item)
+        item.destroy()
+        self.reorder_items()
+
+    def reorder_items(self):
+        for i, item in enumerate(self.label_list_2):
+            print(i)
+            # item.grid(row=i, column=0, padx=100, pady=10, sticky="nsew")
+        print("reorder")
 
 class App(customtkinter.CTk):
     # window size
     width = 1000
-    height = 500
+    height = 600
 
     def __init__(self, *args, **kwargs):
         # call super constructor
@@ -205,23 +240,30 @@ class App(customtkinter.CTk):
         self.frame_prof.add("Créer un élève")
         self.frame_prof.add("Corriger un QCM")
         self.frame_prof.tab("Créer un QCM").grid_columnconfigure(0, weight=1)
+        self.frame_prof.tab("Créer un QCM").grid_rowconfigure(3, weight=1)
         self.frame_prof.tab("Créer un élève").grid_columnconfigure(0, weight=1)
         self.frame_prof.tab("Corriger un QCM").grid_columnconfigure(0, weight=1)
 
-        self.label_heading = customtkinter.CTkLabel(
+        # self.label_heading = customtkinter.CTkLabel(
+        #     self.frame_prof.tab("Créer un QCM"),
+        #     text="Créer un QCM",
+        #     font=customtkinter.CTkFont(size=28, weight="bold"),
+        # )
+        # self.label_heading.grid(row=2, column=0, padx=30, pady=30)
+
+        self.entry_qcm_name = customtkinter.CTkEntry(
             self.frame_prof.tab("Créer un QCM"),
-            text="Créer un QCM",
-            font=customtkinter.CTkFont(size=28, weight="bold"),
+            font=customtkinter.CTkFont(size=20, weight="bold"),
+            width=300,
         )
-        self.label_heading.grid(row=2, column=0, padx=30, pady=30)
+        self.entry_qcm_name.grid(row=2, column=0, padx=30, pady=30)
 
 
-
-        self.frame_form_create_qcm = ScrollableFrameCreateQCM(master=self.frame_prof.tab("Créer un QCM"))
+        self.frame_form_create_qcm = ScrollableFrameCreateQCM(self.frame_prof.tab("Créer un QCM"))
         self.frame_form_create_qcm.grid(row=3, column=0, padx=30, pady=15, sticky="nesw")
 
-        self.scrollable_frame.add_item("yes")
-        self.scrollable_frame.add_item("no")
+        self.frame_form_create_qcm.add_item("yes")
+        self.frame_form_create_qcm.add_item("no")
         
 
 
