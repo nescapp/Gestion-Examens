@@ -1,0 +1,38 @@
+Question: o
+Réponses:
+1) k
+2) k
+3) o
+4) k
+Réponse correcte : 1
+Réponse de l'élève : 3
+
+Question: d
+Réponses:
+1) h
+2) h
+3) h
+4) h
+Réponse correcte : 1
+Réponse de l'élève : 1
+
+Question: j
+Réponses:
+1) j
+2) d
+3) d
+4) d
+Réponse correcte : 1
+Réponse de l'élève : 1
+
+Question: d
+Réponses:
+1) d
+2) t
+3) t
+4) t
+Réponse correcte : 1
+Réponse de l'élève : 1
+
+Note : 3/4
+--------------------------------------------------

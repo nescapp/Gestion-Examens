@@ -65,7 +65,7 @@ class ScrollableFrameCreateQCM(customtkinter.CTkScrollableFrame):
             row=len(self.label_list_2), column=0, padx=100, pady=10, sticky="nsew"
         )
         frame_item.grid_columnconfigure(0, weight=1)
-
+        
         # label_item = customtkinter.CTkLabel(
         #     frame_item,
         #     text=item,

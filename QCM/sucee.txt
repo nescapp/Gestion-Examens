@@ -1,0 +1,29 @@
+q: o
+1) k
+2) k
+3) o
+4) k
+Correct: 1
+
+q: d
+1) h
+2) h
+3) h
+4) h
+Correct: 1
+
+q: j
+1) j
+2) d
+3) d
+4) d
+Correct: 1
+
+q: d
+1) d
+2) t
+3) t
+4) t
+Correct: 1
+
+Quiz duration: 50
