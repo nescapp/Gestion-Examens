@@ -1,2 +1,4 @@
 ELEVE|eleve:eleve
 PROF|prof:prof
+ELEVE|suce:suce
+ELEVE|sa:sa

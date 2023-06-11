@@ -1,6 +1,5 @@
 import os
 import time
-import threading
 
 """
 utilisation des libairies:
@@ -24,19 +23,6 @@ class App:
         print("\033c")  # Effacer le terminal
         print("\033[93mAu revoir!\033[0m")
         exit()
-
-    def timer(self, duree_timer):
-        """Fonction pour lancer un timer"""
-        global timer # Variable globale pour le timer
-        timer = duree_timer # Initialiser le timer
-
-        for i in range(timer): # Boucle pour afficher le timer
-            timer -= 1 # Décrémenter le timer
-            time.sleep(1) # Attendre 1 seconde
-
-        print(
-            "\nLe temps est fini, entrez votre dernière réponse (appuiez sur enter si vous avez déjà écris la réponse): "
-        )
 
     def compte_a_rebours(self, duration):
         """Fonction pour lancer un compte à rebours"""
@@ -80,9 +66,9 @@ class App:
                 if user == "PROF" and self.connecter_compte() == "PROF":
                     self.mode_prof() # Lancer le mode professeur
                 elif user == "ELEVE" and self.connecter_compte() == "ELEVE":
-                    self.studentMode() # Lancer le mode élève
+                    self.mode_eleve() # Lancer le mode élève
                 else:
-                    print("\033[91Vous n'aviez pas de compte\033[0m")
+                    print("\033[91mVous n'aviez pas de compte\033[0m")
                     time.sleep(1)
                     print("\033c", end="")
                     self.menu_principal()
@@ -93,7 +79,7 @@ class App:
             else:
                 answer = input("Please enter a valid answer \033[2m(o/n)\033[0m : ") # Demander une réponse valide
 
-    def cree_compte(self, whoRegister, whoCreatedAccount):
+    def cree_compte(self, qui_enregistre, qui_creer):
         """Fonction pour créer un compte"""
         while True: # Boucle pour demander le nom d'utilisateur et le mot de passe
             username = input("Nom d'utilisateur: ").lower()
@@ -118,13 +104,13 @@ class App:
                         self.menu_principal()
 
             with open(file="Accounts\\eleves.txt", mode="a", encoding="utf-8") as file: # Ajouter le compte au fichier des comptes
-                file.write(f"{whoRegister}|{username}:{password}\n")
+                file.write(f"{qui_enregistre}|{username}:{password}\n")
 
             print("\033[92m• Compte créé avec succès\033[0m")
             time.sleep(1.5)
             print("\033c", end="") # Effacer l'écran
 
-            if whoCreatedAccount == "PROF": # Vérifier qui a créé le compte
+            if qui_creer == "PROF": # Vérifier qui a créé le compte
                 self.mode_prof()
             else:
                 self.menu_principal()
@@ -293,19 +279,19 @@ class App:
             }
         )
 
-    def studentMode(self):
+    def mode_eleve(self):
         """Fonction pour le mode élève"""
         print("\033c", end="")
         print("\033[4m  MENU ELEVE  \033[0m")
         self.action_form(
             {
-                "1": ("Passer un QCM", lambda: self.takeQuiz()),
+                "1": ("Passer un QCM", lambda: self.faire_qcm()),
                 "2": ("Menu Principal", lambda: (print("\033c", end=""), self.menu_principal())),
                 "q": ("Quitter", lambda: self.quit()),
             }
         )
 
-    def takeQuiz(self):
+    def faire_qcm(self):
         """Fonction pour passer un QCM"""
         print("\033c", end="")
         # définir les variables
@@ -373,61 +359,64 @@ class App:
             i += 1
 
         self.compte_a_rebours(duree_qcm)
-        thread_timer = threading.Thread(target=self.timer, args=(duree_qcm,))
-        thread_timer.start()
 
-        while timer > 0: # Afficher les questions et les réponses
-            for question in range(len(questions)):
-                print(f"Question : {questions[question]}")
-                print("\n".join(reponses[question]))
-                while True:
-                    try:
-                        userInput = int(input("Entrez votre réponse : "))
-                        break
-                    except ValueError:
-                        print("Choix Invalide")
+        # start timer
+        start = time.time()
 
-                if userInput == reponses_correctes[question]:
-                    print("Correcte!\n")
-                    note += 1
-                else:
-                    print("Incorrecte!\n")
 
-                if not os.path.exists(
-                    f"{self.nom_dossier}\\{self.username}_{selectedQCM}.txt"
-                ):
-                    open(
-                        f"{self.nom_dossier}\\{self.username}_{selectedQCM}.txt", "w"
-                    ).close()
-
-                with open(
-                    f"{self.nom_dossier}\\{self.username}_{selectedQCM}.txt",
-                    "a",
-                    encoding="utf-8",
-                ) as file: # Enregistrer les réponses de l'élève dans un fichier
-                    file.write(f"Question: {questions[question]}\n")
-                    file.write("Réponses:\n")
-                    file.write("\n".join(reponses[question]) + "\n")
-                    file.write(f"Réponse correcte : {reponses_correctes[question]}\n")
-                    file.write(f"Réponse de l'élève : {userInput}\n")
-                    file.write("\n")
-
-                if timer <= 0:
+        for question in range(len(questions)):
+            print(f"Question : {questions[question]}")
+            print("\n".join(reponses[question]))
+            while True:
+                try:
+                    userInput = int(input("Entrez votre réponse : "))
                     break
-            break
+                except ValueError:
+                    print("Choix Invalide")
+
+            if userInput == reponses_correctes[question]:
+                print("Correcte!\n")
+                note += 1
+            else:
+                print("Incorrecte!\n")
+
+            if not os.path.exists(
+                f"{self.nom_dossier}\\{self.username}_{selectedQCM}.txt"
+            ):
+                open(
+                    f"{self.nom_dossier}\\{self.username}_{selectedQCM}.txt", "w"
+                ).close()
+
+            with open(
+                f"{self.nom_dossier}\\{self.username}_{selectedQCM}.txt",
+                "a",
+                encoding="utf-8",
+            ) as file: # Enregistrer les réponses de l'élève dans un fichier
+                file.write(f"Question: {questions[question]}\n")
+                file.write("Réponses:\n")
+                file.write("\n".join(reponses[question]) + "\n")
+                file.write(f"Réponse correcte : {reponses_correctes[question]}\n")
+                file.write(f"Réponse de l'élève : {userInput}\n")
+                file.write("\n")
+            
+        # stop timer
+        end = time.time()
+        
         # Enregistrer la note de l'élève dans un fichier
         with open(
             f"{self.nom_dossier}\\{self.username}_{selectedQCM}.txt",
             "a",
             encoding="utf-8",
         ) as file:
-            file.write(f"Note : {note}/{len(questions)}\n")
+            file.write(f"Temps pris pour completer le qcm: {round(end - start)} secondes\n")
+            file.write(f"Note: {note}/{len(questions)}\n")
             file.write("--------------------------------------------------\n")
 
         time.sleep(1)
         print("\033c", end="")
 
         print("QCM Terminé!\033[0m") # Afficher la note de l'élève
+        print(f"Vous avez pris {round(end - start)} secondes pour completer le QCM")
         if note == len(questions):
             print(f"Très Bien! ({note}/{len(questions)})")
         elif note >= len(questions) / 2:
@@ -435,7 +424,7 @@ class App:
         else:
             print(f"Insuffisant : {note}/{len(questions)}\033[0m")
         time.sleep(2)
-        self.studentMode()
+        self.mode_eleve()
 
 
 def main():
