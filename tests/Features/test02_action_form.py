@@ -21,8 +21,17 @@ def action2(argument):
 def action3(argument):
     print("Executing action3 with argument:", argument)
 
+def noarg():
+    print("Executing noarg")
+
 # Call ActionForm with the desired actions
 ActionForm({'l': ('Action 1', lambda: action1('something interesting')),
             'k': ('Action 2', lambda: action2('something else')),
             'lk': ('Action 1&2', lambda: action1('something interesting') or action2('something else')),
-            'lkj': ('Action 1&2&3', lambda: action1('something interesting') or action2('something else') or action3('something more'))})
+            'lkj': ('Action 1&2&3', lambda: action1('something interesting') or action2('something else') or action3('something more')),
+            'n' : ('No argument', noarg)})
+
+
+"""
+lambda is required to pass arguments to the function. it is not required if the function does not take any arguments.
+"""
