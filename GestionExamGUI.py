@@ -42,13 +42,13 @@ class ScrollableFrameCreateQCM(customtkinter.CTkScrollableFrame):
             font=customtkinter.CTkFont(size=20, weight="bold"),
             command=lambda: self.add_item("Nouvelle question"),
         )
-        button_add.grid(row=10, column=0, padx=10, pady=10, sticky="nsew")
+        button_add.grid(row=100, column=0, padx=10, pady=10, sticky="nsew")
         
 
     def add_item(self, item):
         randomhexcolor = "#%06x" % random.randint(0, 0xFFFFFF)
 
-        if len(self.label_list_2) > 10:
+        if len(self.label_list_2) > 100:
             messagebox.showerror(
                 "Erreur",
                 "Vous ne pouvez pas ajouter plus de 10 questions dans un QCM",
@@ -98,7 +98,11 @@ class ScrollableFrameCreateQCM(customtkinter.CTkScrollableFrame):
     def reorder_items(self):
         for i, item in enumerate(self.label_list_2):
             print(i)
+            print(item)
+            item.grid_forget()
             # item.grid(row=i, column=0, padx=100, pady=10, sticky="nsew")
+            item.grid(row=i, column=0, padx=100, pady=10, sticky="nsew")
+
         print("reorder")
 
 class App(customtkinter.CTk):
